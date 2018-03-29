@@ -4,12 +4,14 @@ import play
 import subprocess
 
 
-def generateNewMP3(sentence,name):
+def generateNewMP3(directory, sentence,name):
     '''Generate one piece of new mp3 file '''
 
     try:
         tts = gTTS(text = '{}'.format(sentence), lang = 'en-us', slow = False)
-        tts.save("{}.mp3".format(name))
+        if not os.path.exists("./album/{}".format(directory)):
+            os.makedirs("./album/{}".format(directory))
+        tts.save("./album/{}/{}.mp3".format(directory, name))
         print "{}.mp3 generated.".format(name)
 
 
@@ -28,11 +30,10 @@ def generateAlbum(filename):
 
         for line in file:
             if not line.isspace():         #Skip lines only contain spaces
-                generateNewMP3(line,i)
+                generateNewMP3(filename,line,i)
                 i+=1
             
         print"TTS completed"
-        print"Please create a new folder in folder 'album', rename it to the same name as file name, then move all mp3 files to it"
         file.close()
 
 
@@ -59,7 +60,7 @@ def menu():
             sentence = str(raw_input("Enter new sentence: "))
             user_choice = str.upper(raw_input("press Y to generate new mp3, press N go back... "))
             if user_choice == "Y":
-                generateNewMP3(sentence,"new_wfd")
+                generateNewMP3("new_WFD", sentence, "new_wfd")
             else:
                 continue
             
